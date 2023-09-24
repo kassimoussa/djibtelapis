@@ -89,7 +89,7 @@ class ApisController extends Controller
             WHEN status = "o" THEN "Out"
             ELSE status
             END AS "status" ')->where('numero', $nd)->orderBy('date_activation', 'asc')->get();
-            if ($mobiles) {
+            if ($mobiles->count() > 0) {
                 $data =  [
                     'total de ligne' => $mobiles->count(),
                     'lignes' => $mobiles,
