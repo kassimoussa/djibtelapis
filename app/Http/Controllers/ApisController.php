@@ -25,9 +25,8 @@ class ApisController extends Controller
     {
         if ($nd) {
             $fix = Fix::select('nd as Numero', 'Onu', 'cust_name as Nom', 'cust_category as Categorie')->where('nd', $nd)->first();
-            if($fix)
-            {
-            return response()->json($fix, 200);
+            if ($fix) {
+                return response()->json($fix, 200);
             } else {
                 $data = ["message" => "Le numéro donné est introuvable !"];
                 return response()->json($data, 404);
@@ -42,8 +41,7 @@ class ApisController extends Controller
     {
         if ($nom) {
             $fix = Fix::select('nd as Numero', 'Onu', 'cust_name as Nom', 'cust_category as Categorie')->where('cust_name', 'Like', '%' . $nom . '%')->orderBy('cust_name', 'asc')->get();;
-            if($fix)
-            {
+            if ($fix) {
                 $data =  [
                     'total de ligne' => $fix->count(),
                     'lignes' => $fix,
@@ -59,10 +57,17 @@ class ApisController extends Controller
         }
     }
 
-    
+
     public function all_mobile()
     {
-        $mobiles = Mobile::select('numero', 'nom', 'status', 'date_activation', 'date_desactivation' )->orderBy('date_activation', 'asc')->get();
+        $mobiles = Mobile::selectRaw('numero, nom, date_activation, date_desactivation, 
+        CASE
+        WHEN status = "a" THEN "Active"
+        WHEN status = "d" THEN "Désactive"
+        WHEN status = "s" THEN "Suspendue"
+        WHEN status = "o" THEN "Out"
+        ELSE status
+        END AS "status" ')->orderBy('date_activation', 'asc')->get();
 
         $data =  [
             'total de ligne' => $mobiles->count(),
@@ -72,18 +77,24 @@ class ApisController extends Controller
         return response()->json($data, 200);
     }
 
-    
+
     public function nd_mobile($nd = null)
     {
         if ($nd) {
-            $mobiles = Mobile::select('numero', 'nom', 'status', 'date_activation', 'date_desactivation' )->where('numero', $nd)->orderBy('date_activation', 'asc')->get();
-            if($mobiles)
-            {
+            $mobiles = Mobile::selectRaw('numero, nom, date_activation, date_desactivation, 
+            CASE
+            WHEN status = "a" THEN "Active"
+            WHEN status = "d" THEN "Désactive"
+            WHEN status = "s" THEN "Suspendue"
+            WHEN status = "o" THEN "Out"
+            ELSE status
+            END AS "status" ')->where('numero', $nd)->orderBy('date_activation', 'asc')->get();
+            if ($mobiles) {
                 $data =  [
                     'total de ligne' => $mobiles->count(),
                     'lignes' => $mobiles,
                 ];
-        
+
                 return response()->json($data, 200);
             } else {
                 $data = ["message" => "Le numéro donné est introuvable !"];
@@ -95,18 +106,24 @@ class ApisController extends Controller
         }
     }
 
-    
+
     public function nom_mobile($nom = null)
     {
         if ($nom) {
-            $mobiles = Mobile::select('numero', 'nom', 'status', 'date_activation', 'date_desactivation' )->where('nom', 'Like', '%' . $nom . '%')->orderBy('date_activation', 'asc')->get();
-            if($mobiles)
-            {
+            $mobiles = Mobile::selectRaw('numero, nom, date_activation, date_desactivation, 
+            CASE
+            WHEN status = "a" THEN "Active"
+            WHEN status = "d" THEN "Désactive"
+            WHEN status = "s" THEN "Suspendue"
+            WHEN status = "o" THEN "Out"
+            ELSE status
+            END AS "status" ')->where('nom', 'Like', '%' . $nom . '%')->orderBy('date_activation', 'asc')->get();
+            if ($mobiles) {
                 $data =  [
                     'total de ligne' => $mobiles->count(),
                     'lignes' => $mobiles,
                 ];
-        
+
                 return response()->json($data, 200);
             } else {
                 $data = ["message" => "Aucun numéro trouvé pour le nom donné !"];
@@ -117,7 +134,4 @@ class ApisController extends Controller
             return response()->json($message, 400);
         }
     }
-
-
-
 }
