@@ -80,6 +80,11 @@ class ApisController extends Controller
 
     public function nd_mobile($nd = null)
     {
+        $nd_len = strlen($nd);
+        if($nd_len == 8) {
+            $nd = "253" . $nd;
+        } 
+
         if ($nd) {
             $mobiles = Mobile::selectRaw('numero, nom, date_activation, date_desactivation, 
             CASE
