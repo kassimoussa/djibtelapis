@@ -122,7 +122,7 @@ class ApisController extends Controller
             WHEN status = "s" THEN "Suspendue"
             WHEN status = "o" THEN "Out"
             ELSE status
-            END AS "status" ')->where('nom', 'Like', '%' . $nom . '%')->orderBy('date_activation', 'desc')->get();
+            END AS "status" ')->where('nom', 'Like', '%' . $nom . '%')->orderBy('nom', 'asc')->get();
             if ($mobiles) {
                 $data =  [
                     'total de ligne' => $mobiles->count(),
