@@ -25,6 +25,7 @@ Route::prefix('v1')->group(function(){
     Route::get('fix/nom/{nom?}', [ApisController::class, 'nom_fix']);
     Route::get('mobile', [ApisController::class, 'all_mobile']);
     Route::get('mobile/numero/{nd?}', [ApisController::class, 'nd_mobile']);
+    Route::get('mobile/numero2/{nd?}', [ApisController::class, 'nd_mobile2']);
     Route::get('mobile/nom/{nom?}', [ApisController::class, 'nom_mobile']);
 
 });

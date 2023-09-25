@@ -111,6 +111,34 @@ class ApisController extends Controller
         }
     }
 
+    public function nd_mobile2($nd = null)
+    {
+        $nd_len = strlen($nd);
+        if($nd_len == 8) {
+            $nd = "253" . $nd;
+        } 
+
+        if ($nd) {
+            $mobiles = Mobile::selectRaw('numero, nom, date_activation, date_desactivation, 
+            CASE
+            WHEN status = "a" THEN "Active"
+            WHEN status = "d" THEN "Désactive"
+            WHEN status = "s" THEN "Suspendue"
+            WHEN status = "o" THEN "Out"
+            ELSE status
+            END AS "status" ')->where('numero', 'Like', '25377%')->where('numero', $nd)->orderBy('date_activation', 'desc')->first();
+            if ($mobiles->count() > 0) {
+                return response()->json($mobiles, 200);
+            } else {
+                $data = ["message" => "Le numéro donné est introuvable !"];
+                return response()->json($data, 404);
+            }
+        } else {
+            $message = "Il faut passer un argument";
+            return response()->json($message, 400);
+        }
+    }
+
 
     public function nom_mobile($nom = null)
     {
